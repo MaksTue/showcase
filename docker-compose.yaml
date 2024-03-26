@@ -1,0 +1,28 @@
+version: "3.0"
+
+services:
+  db:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=root123
+    ports:
+      - "5432:5432"
+    volumes:
+      - "${pwd}/db:/var/lib/postgresql/data"
+
+  express-app:
+    image: node:18-alpine
+    container_name: express-app
+    restart: always
+    environment:
+      - PORT
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    volumes:
+      - "${pwd}:/app"
+    command: ["npm", "run", "dev"]
+    working_dir: "/app"
