@@ -1,9 +1,13 @@
 import express from "express";
 import { projectsRouter } from "./routes/projectRoutes.js";
 
+import { mainRouter } from "./routes/mainRoutes.js";
+
 const app = express();
 
 app.use("/projects", projectsRouter);
+
+app.use("/", mainRouter);
 
 app.get("/health", (req, res) => {
   res.send("OK");

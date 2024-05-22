@@ -1,22 +1,15 @@
-import pool from "../db.js";
+import * as projectService from "../services/projectService.js";
 
 export async function getProject(req, res, next) {
   const projectId = req.params.projectId;
   try {
-    const projectQuery = `
-        SELECT p.*, t.name AS track_name
-        FROM Projects p
-        JOIN Tracks t ON p.track = t.id
-        WHERE p.id = $1
-      `;
-    const { rows } = await pool.query(projectQuery, [projectId]);
-    if (rows.length === 0) {
+    const project = await projectService.getProjectById(projectId);
+    if (!project) {
       return res.status(404).json({ error: "Project not found" });
     }
-    const project = rows[0];
     res.json(project);
   } catch (error) {
-    console.error("Error executing query", error);
+    console.error("Error getting project", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
@@ -24,17 +17,10 @@ export async function getProject(req, res, next) {
 export async function getProjectUsers(req, res, next) {
   const projectId = req.params.projectId;
   try {
-    const usersQuery = `
-        SELECT u.*
-        FROM Users u
-        JOIN ProjectUsers pu ON u.id = pu.user_id
-        WHERE pu.project_id = $1
-      `;
-    const usersResult = await pool.query(usersQuery, [projectId]);
-
-    res.json(usersResult.rows);
+    const users = await projectService.getProjectUsersById(projectId);
+    res.json(users);
   } catch (error) {
-    console.error("Error executing query", error);
+    console.error("Error getting project users", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
