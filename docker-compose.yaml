@@ -12,27 +12,27 @@ services:
     volumes:
       - "${pwd}/db:/var/lib/postgresql/data"
 
-  # express-app:
-  #   image: node:18-alpine
-  #   container_name: express-app
-  #   restart: always
-  #   environment:
-  #     - PORT
-  #   depends_on:
-  #     - db
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - "${pwd}:/app"
-  #   command: ["npm", "run", "start"]
-  #   working_dir: "/app"
+  express-app:
+    image: node:18-alpine
+    container_name: express-app
+    restart: always
+    environment:
+      - PORT
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    volumes:
+      - "${pwd}:/app"
+    command: ["npm", "run", "start"]
+    working_dir: "/app"
 
-  # frontend:
-  #   image: nginx:alpine
-  #   container_name: frontend
-  #   depends_on:
-  #     - express-app
-  #   ports:
-  #     - "8000:80"
-  #   volumes:
-  #     - ./frontend/build:/usr/share/nginx/html
+  frontend:
+    image: nginx:alpine
+    container_name: frontend
+    depends_on:
+      - express-app
+    ports:
+      - "8000:80"
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html
